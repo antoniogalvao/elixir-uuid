@@ -56,6 +56,13 @@ defmodule UUID do
    version: 1,
    variant: :rfc4122]}
 
+  iex> UUID.info(<<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>)
+  {:ok, [uuid: <<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>,
+   binary: <<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>,
+   type: :raw,
+   version: 4,
+   variant: :rfc4122]}
+
   iex> UUID.info("12345")
   {:error, "Invalid argument; Not a valid UUID: 12345"}
 
@@ -109,6 +116,13 @@ defmodule UUID do
    version: 1,
    variant: :rfc4122]
 
+  iex> UUID.info!(<<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>)
+  [uuid: <<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>,
+   binary: <<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>,
+   type: :raw,
+   version: 4,
+   variant: :rfc4122]
+
   ```
 
   """
@@ -129,7 +143,7 @@ defmodule UUID do
   Convert binary UUID data to a string.
 
   Will raise an ArgumentError if the given binary is not valid UUID data, or
-  the format argument is not one of: `:default`, `:hex`, or `:urn`.
+  the format argument is not one of: `:default`, `:hex`, `:urn`, or `:raw`.
 
   ## Examples
 
@@ -145,6 +159,10 @@ defmodule UUID do
   iex> UUID.binary_to_string!(<<239, 27, 26, 40, 238, 52, 17, 227, 136,
   ...>        19, 20, 16, 159, 241, 163, 4>>, :urn)
   "urn:uuid:ef1b1a28-ee34-11e3-8813-14109ff1a304"
+
+  iex> UUID.binary_to_string!(<<39, 73, 196, 181, 29, 90, 74, 96, 157,
+  ...>        47, 171, 144, 84, 164, 155, 52>>, :raw)
+  <<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>
 
   ```
 
@@ -178,6 +196,10 @@ defmodule UUID do
   iex> UUID.string_to_binary!("urn:uuid:ef1b1a28-ee34-11e3-8813-14109ff1a304")
   <<239, 27, 26, 40, 238, 52, 17, 227, 136, 19, 20, 16, 159, 241, 163, 4>>
 
+  iex> UUID.string_to_binary!(<<39, 73, 196, 181, 29, 90, 74, 96, 157, 47,
+  ...>        171, 144, 84, 164, 155, 52>>)
+  <<39, 73, 196, 181, 29, 90, 74, 96, 157, 47, 171, 144, 84, 164, 155, 52>>
+
   ```
 
   """
@@ -208,6 +230,11 @@ defmodule UUID do
   iex> UUID.uuid1(:urn)
   "urn:uuid:cdfdaf44-ee35-11e3-846b-14109ff1a304"
 
+  iex> UUID.uuid1(:raw)
+  <<205, 253, 175, 68, 238, 53, 17, 227, 132, 107, 20, 16, 159, 241, 163, 4>>
+
+  iex> UUID.uuid1(:slug)
+  "zf2vRO41EeOEaxQQn_GjBA"
   ```
 
   """
@@ -235,6 +262,11 @@ defmodule UUID do
   iex> UUID.uuid1(:urn)
   "urn:uuid:cdfdaf44-ee35-11e3-846b-14109ff1a304"
 
+  iex> UUID.uuid1(:raw)
+  <<205, 253, 175, 68, 238, 53, 17, 227, 132, 107, 20, 16, 159, 241, 163, 4>>
+
+  iex> UUID.uuid1(:slug)
+  "zf2vRO41EeOEaxQQn_GjBA"
   ```
 
   """
@@ -274,9 +306,14 @@ defmodule UUID do
   iex> UUID.uuid3(:dns, "my.domain.com", :urn)
   "urn:uuid:03bf0706-b7e9-33b8-aee5-c6142a816478"
 
+  iex> UUID.uuid3(:dns, "my.domain.com", :raw)
+  <<3, 191, 7, 6, 183, 233, 51, 184, 174, 229, 198, 20, 42, 129, 100, 120>>
+
   iex> UUID.uuid3("cdfdaf44-ee35-11e3-846b-14109ff1a304", "my.domain.com")
   "8808f33a-3e11-3708-919e-15fba88908db"
 
+  iex> UUID.uuid3(:dns, "my.domain.com", :slug)
+  "A78HBrfpM7iu5cYUKoFkeA"
   ```
 
   """
@@ -329,6 +366,12 @@ defmodule UUID do
 
   iex> UUID.uuid4(:urn)
   "urn:uuid:fb49a0ec-d60c-4d20-9264-3b4cfe272106"
+
+  iex> UUID.uuid4(:raw)
+  <<251, 73, 160, 236, 214, 12, 77, 32, 146, 100, 59, 76, 254, 39, 33, 6>>
+
+  iex> UUID.uuid4(:slug)
+  "-0mg7NYMTSCSZDtM_ichBg"
   ```
 
   """
@@ -365,9 +408,14 @@ defmodule UUID do
   iex> UUID.uuid5(:dns, "my.domain.com", :urn)
   "urn:uuid:016c25fd-70e0-56fe-9d1a-56e80fa20b82"
 
+  iex> UUID.uuid5(:dns, "my.domain.com", :raw)
+  <<1, 108, 37, 253, 112, 224, 86, 254, 157, 26, 86, 232, 15, 162, 11, 130>>
+
   iex> UUID.uuid5("fb49a0ec-d60c-4d20-9264-3b4cfe272106", "my.domain.com")
   "822cab19-df58-5eb4-98b5-c96c15c76d32"
 
+  iex> UUID.uuid5("fb49a0ec-d60c-4d20-9264-3b4cfe272106", "my.domain.com", :slug)
+  "giyrGd9YXrSYtclsFcdtMg"
   ```
 
   """
@@ -407,31 +455,71 @@ defmodule UUID do
   #
 
   # Convert UUID bytes to String.
-  defp uuid_to_string(<<u0::32, u1::16, u2::16, u3::16, u4::48>>, :default) do
-    [binary_to_hex_list(<<u0::32>>), ?-, binary_to_hex_list(<<u1::16>>), ?-,
-     binary_to_hex_list(<<u2::16>>), ?-, binary_to_hex_list(<<u3::16>>), ?-,
-     binary_to_hex_list(<<u4::48>>)]
-      |> IO.iodata_to_binary
+  defp uuid_to_string(<<_::128>> = u, :default) do
+    uuid_to_string_default(u)
   end
-  defp uuid_to_string(<<u::128>>, :hex) do
-    binary_to_hex_list(<<u::128>>)
-      |> IO.iodata_to_binary
+  defp uuid_to_string(<<_::128>> = u, :hex) do
+    IO.iodata_to_binary(for <<part::4 <- u>>, do: e(part))
   end
-  defp uuid_to_string(<<u::128>>, :urn) do
-    @urn <> uuid_to_string(<<u::128>>, :default)
+  defp uuid_to_string(<<_::128>> = u, :urn) do
+    @urn <> uuid_to_string(u, :default)
   end
-  defp uuid_to_string(_u, format) when format in [:default, :hex, :urn] do
+  defp uuid_to_string(<<_::128>> = u, :raw) do
+    u
+  end
+  defp uuid_to_string(<<_::128>> = u, :slug) do
+    Base.url_encode64(u, [padding: false])
+  end
+  defp uuid_to_string(_u, format) when format in [:default, :hex, :urn, :slug] do
     raise ArgumentError, message:
     "Invalid binary data; Expected: <<uuid::128>>"
   end
   defp uuid_to_string(_u, format) do
     raise ArgumentError, message:
-    "Invalid format #{format}; Expected: :default|:hex|:urn"
+    "Invalid format #{format}; Expected: :default|:hex|:urn|:slug"
   end
 
+  defp uuid_to_string_default(<<
+         a1::4, a2::4, a3::4, a4::4,
+         a5::4, a6::4, a7::4, a8::4,
+         b1::4, b2::4, b3::4, b4::4,
+         c1::4, c2::4, c3::4, c4::4,
+         d1::4, d2::4, d3::4, d4::4,
+         e1::4, e2::4, e3::4, e4::4,
+         e5::4, e6::4, e7::4, e8::4,
+         e9::4, e10::4, e11::4, e12::4 >>) do
+    << e(a1), e(a2), e(a3), e(a4), e(a5), e(a6), e(a7), e(a8), ?-,
+       e(b1), e(b2), e(b3), e(b4), ?-,
+       e(c1), e(c2), e(c3), e(c4), ?-,
+       e(d1), e(d2), e(d3), e(d4), ?-,
+       e(e1), e(e2), e(e3), e(e4), e(e5), e(e6), e(e7), e(e8), e(e9), e(e10), e(e11), e(e12) >>
+  end
+
+  @compile {:inline, e: 1}
+
+  defp e(0),  do: ?0
+  defp e(1),  do: ?1
+  defp e(2),  do: ?2
+  defp e(3),  do: ?3
+  defp e(4),  do: ?4
+  defp e(5),  do: ?5
+  defp e(6),  do: ?6
+  defp e(7),  do: ?7
+  defp e(8),  do: ?8
+  defp e(9),  do: ?9
+  defp e(10), do: ?a
+  defp e(11), do: ?b
+  defp e(12), do: ?c
+  defp e(13), do: ?d
+  defp e(14), do: ?e
+  defp e(15), do: ?f
+
   # Extract the type (:default etc) and pure byte value from a UUID String.
-  defp uuid_string_to_hex_pair(<<uuid::binary>>) do
-    uuid = String.downcase(uuid)
+  defp uuid_string_to_hex_pair(<<_::128>> = uuid) do
+    {:raw, uuid}
+  end
+  defp uuid_string_to_hex_pair(<<uuid_in::binary>>) do
+    uuid = String.downcase(uuid_in)
     {type, hex_str} = case uuid do
       <<u0::64, ?-, u1::32, ?-, u2::32, ?-, u3::32, ?-, u4::96>> ->
         {:default, <<u0::64, u1::32, u2::32, u3::32, u4::96>>}
@@ -440,15 +528,18 @@ defmodule UUID do
       <<@urn, u0::64, ?-, u1::32, ?-, u2::32, ?-, u3::32, ?-, u4::96>> ->
         {:urn, <<u0::64, u1::32, u2::32, u3::32, u4::96>>}
       _ ->
-        raise ArgumentError, message:
-          "Invalid argument; Not a valid UUID: #{uuid}"
+        case uuid_in do
+          _ when byte_size(uuid_in) == 22 ->
+            case Base.url_decode64(uuid_in <> "==") do
+              {:ok, decoded} -> {:slug, Base.encode16(decoded)}
+              _ -> raise ArgumentError, message: "Invalid argument; Not a valid UUID: #{uuid}"
+            end
+          _ -> raise ArgumentError, message: "Invalid argument; Not a valid UUID: #{uuid}"
+        end
     end
 
     try do
-      <<hex::128>> = :binary.bin_to_list(hex_str)
-        |> hex_str_to_list
-        |> IO.iodata_to_binary
-      {type, <<hex::128>>}
+      {type, hex_str_to_binary(hex_str)}
     catch
       _, _ ->
         raise ArgumentError, message:
@@ -527,51 +618,45 @@ defmodule UUID do
   defp variant(_) do
     raise ArgumentError, message: "Invalid argument; Not valid variant bits"
   end
+  
+  defp hex_str_to_binary(<< a1, a2, a3, a4, a5, a6, a7, a8,
+                            b1, b2, b3, b4,
+                            c1, c2, c3, c4,
+                            d1, d2, d3, d4,
+                            e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12 >>) do
+    << d(a1)::4, d(a2)::4, d(a3)::4, d(a4)::4,
+        d(a5)::4, d(a6)::4, d(a7)::4, d(a8)::4,
+        d(b1)::4, d(b2)::4, d(b3)::4, d(b4)::4,
+        d(c1)::4, d(c2)::4, d(c3)::4, d(c4)::4,
+        d(d1)::4, d(d2)::4, d(d3)::4, d(d4)::4,
+        d(e1)::4, d(e2)::4, d(e3)::4, d(e4)::4,
+        d(e5)::4, d(e6)::4, d(e7)::4, d(e8)::4,
+        d(e9)::4, d(e10)::4, d(e11)::4, d(e12)::4 >>
+  end
+  
+  @compile {:inline, d: 1}
 
-  # Binary data to list of hex characters.
-  defp binary_to_hex_list(binary) do
-    :binary.bin_to_list(binary)
-      |> list_to_hex_str
-  end
-
-  # Hex string to hex character list.
-  defp hex_str_to_list([]) do
-    []
-  end
-  defp hex_str_to_list([x, y | tail]) do
-    [to_int(x) * 16 + to_int(y) | hex_str_to_list(tail)]
-  end
-
-  # List of hex characters to a hex character string.
-  defp list_to_hex_str([]) do
-    []
-  end
-  defp list_to_hex_str([head | tail]) do
-    to_hex_str(head) ++ list_to_hex_str(tail)
-  end
-
-  # Hex character integer to hex string.
-  defp to_hex_str(n) when n < 256 do
-    [to_hex(div(n, 16)), to_hex(rem(n, 16))]
-  end
-
-  # Integer to hex character.
-  defp to_hex(i) when i < 10 do
-    0 + i + 48
-  end
-  defp to_hex(i) when i >= 10 and i < 16 do
-    ?a + (i - 10)
-  end
-
-  # Hex character to integer.
-  defp to_int(c) when ?0 <= c and c <= ?9 do
-    c - ?0
-  end
-  defp to_int(c) when ?A <= c and c <= ?F do
-    c - ?A + 10
-  end
-  defp to_int(c) when ?a <= c and c <= ?f do
-    c - ?a + 10
-  end
-
+  defp d(?0), do: 0
+  defp d(?1), do: 1
+  defp d(?2), do: 2
+  defp d(?3), do: 3
+  defp d(?4), do: 4
+  defp d(?5), do: 5
+  defp d(?6), do: 6
+  defp d(?7), do: 7
+  defp d(?8), do: 8
+  defp d(?9), do: 9
+  defp d(?A), do: 10
+  defp d(?B), do: 11
+  defp d(?C), do: 12
+  defp d(?D), do: 13
+  defp d(?E), do: 14
+  defp d(?F), do: 15
+  defp d(?a), do: 10
+  defp d(?b), do: 11
+  defp d(?c), do: 12
+  defp d(?d), do: 13
+  defp d(?e), do: 14
+  defp d(?f), do: 15
+  defp d(_), do: throw(:error)
 end
